@@ -85,86 +85,86 @@ app.post('/api/create-bundle', async (req, res) => {
     const totalPrice = components.reduce((sum, c) => sum + (c.price * c.quantity), 0).toFixed(2);
 
     // === UPDATE BUNDLE PRODUCT ===
-    const bundleMutation = `
-      mutation {
-        productBundleUpdate(
-          input: {
-            productId: "${mainProductId}",
-            title: "${mainProductTitle}",
-            components: [
-              ${components.map(component => `
-                {
-                  productId: "${component.productId}",
-                  quantity: ${component.quantity},
-                  optionSelections: [
-                    ${component.optionSelections.map(selection => `
-                      {
-                        componentOptionId: "${selection.componentOptionId}",
-                        name: "${selection.name}",
-                        values: ["${selection.values[0]}"]
-                      }
-                    `).join(',')}
-                  ]
-                }
-              `).join(',')}
-            ]
-          }
-        ) {
-          userErrors {
-            field
-            message
-          }
-          productBundleOperation {
-            product {
-              variants(first: 1) {
-                edges {
-                  node {
-                    id
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    `;
-
-    // const bundleMutation = `mutation {
-    //   productBundleCreate(
-    //     input: {
-    //       title: "Bundle Builder",
-    //       components: [
-    //         {
-    //           productId: "gid://shopify/Product/8393959112971",
-    //           quantity: 1,
-    //           optionSelections: [
+    // const bundleMutation = `
+    //   mutation {
+    //     productBundleUpdate(
+    //       input: {
+    //         productId: "${mainProductId}",
+    //         title: "${mainProductTitle}",
+    //         components: [
+    //           ${components.map(component => `
     //             {
-    //               componentOptionId: "gid://shopify/ProductOption/10687583912203",
-    //               name: "Farbe",
-    //               values: "Gold"
+    //               productId: "${component.productId}",
+    //               quantity: ${component.quantity},
+    //               optionSelections: [
+    //                 ${component.optionSelections.map(selection => `
+    //                   {
+    //                     componentOptionId: "${selection.componentOptionId}",
+    //                     name: "${selection.name}",
+    //                     values: ["${selection.values[0]}"]
+    //                   }
+    //                 `).join(',')}
+    //               ]
     //             }
-    //           ]
-    //         },
-    //         {
-    //           productId: "gid://shopify/Product/8393959112971",
-    //           quantity: 2,
-    //           optionSelections: [
-    //             {
-    //               componentOptionId: "gid://shopify/ProductOption/10687583912203",
-    //               name: "Farbe",
-    //               values: "Gold"
+    //           `).join(',')}
+    //         ]
+    //       }
+    //     ) {
+    //       userErrors {
+    //         field
+    //         message
+    //       }
+    //       productBundleOperation {
+    //         product {
+    //           variants(first: 1) {
+    //             edges {
+    //               node {
+    //                 id
+    //               }
     //             }
-    //           ]
+    //           }
     //         }
-    //       ]
-    //     }
-    //   ) {
-    //     userErrors {
-    //       field
-    //       message
+    //       }
     //     }
     //   }
-    // }`;
+    // `;
+
+    const bundleMutation = `mutation {
+      productBundleCreate(
+        input: {
+          title: "Bundle Builder",
+          components: [
+            {
+              productId: "gid://shopify/Product/10074304741642",
+              quantity: 1,
+              optionSelections: [
+                {
+                  componentOptionId: "gid://shopify/ProductOption/12611668836618",
+                  name: "Color",
+                  values: "18k Yellow Gold"
+                }
+              ]
+            },
+            {
+              productId: "gid://shopify/Product/10074304741642",
+              quantity: 2,
+              optionSelections: [
+                {
+                  componentOptionId: "gid://shopify/ProductOption/12611668836618",
+                  name: "Color",
+                  values: "18k Yellow Gold"
+                }
+              ]
+            }
+          ]
+        }
+      ) {
+        userErrors {
+          field
+          message
+        }
+      }
+    }`;
 
     const bundleResponse = await fetch(SHOPIFY_API_URL, {
       method: 'POST',
